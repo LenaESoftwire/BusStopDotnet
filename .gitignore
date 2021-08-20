@@ -1,0 +1,8 @@
+
+.vs/BusStopDotnet/v16/.suo
+
+*.dll
+
+obj/Debug/net5.0/
+
+bin/Debug/net5.0/

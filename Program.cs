@@ -14,13 +14,14 @@ namespace BusStopDotnet
         public static bool ready = false;
         static void Main(string[] args)
         {
-            var buses = ApiService.GetBusesForBusStop("490008660N").Result;
+            var stopId = Helper.GetBusStopNaptanId();
+            var buses = Helper.GetBusesForBusStop(stopId).Result;
             while (!ready) ;
 
-            ApiService.PrintNexFiveBuses(buses);
+            Helper.PrintNexFiveBuses(buses);
         }
 
-        class ApiService
+        class Helper
         {
             public static async Task<List<BusStopResponse>> GetBusesForBusStop(string busStop)
             {
@@ -42,13 +43,20 @@ namespace BusStopDotnet
                 });
 
                 Console.WriteLine($"Busstop {buses[0].NaptanId} {buses[0].StationName}");
+                Console.WriteLine("Here are the next 5 arriving buses");
                 for (var i = 0; (i < buses.Count && i < 5); i++)
                 {
                     var bus = buses[i];
                     Console.Write($"Bus number {bus.LineId} ");
-                    Console.Write($"Going to {bus.DestinationName} ");
-                    Console.WriteLine($"Comes to platform {bus.PlatformName} in {bus.TimeToStation / 60} min");
+                    Console.Write($"going to {bus.DestinationName} ");
+                    Console.WriteLine($"arrives to platform {bus.PlatformName} in {bus.TimeToStation / 60} min");
                 }
+            }
+
+            public static string GetBusStopNaptanId()
+            {
+                Console.Write("Please input Bus Stop NaptanId: ");
+                return Console.ReadLine();
             }
         }
     }
