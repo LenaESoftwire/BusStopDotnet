@@ -18,7 +18,15 @@ namespace BusStopDotnet
             var buses = Helper.GetBusesForBusStop(stopId).Result;
             while (!ready) ;
 
-            Helper.PrintNexFiveBuses(buses);
+            if (buses.Count == 1)
+            {
+                Console.WriteLine($"Couln't find any buses coming from {stopId} bus stop");
+            }
+
+            else
+            {
+                Helper.PrintNexFiveBuses(buses);
+            }
         }
 
         class Helper
