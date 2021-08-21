@@ -1,11 +1,7 @@
 ﻿using BusStopDotnet.Responses;
-using Newtonsoft.Json.Linq;
 using RestSharp;
-using RestSharp.Serialization.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BusStopDotnet
 {
@@ -15,8 +11,8 @@ namespace BusStopDotnet
         static void Main(string[] args)
         {
             var stopId = Helper.GetBusStopNaptanId();
-            var buses = Helper.GetBusesForBusStop(stopId).Result;
-            while (!ready) ;
+            var buses = Helper.GetBusesForBusStop(stopId);
+            //while (!ready) ;
 
             if (buses.Count == 1)
             {
@@ -31,16 +27,14 @@ namespace BusStopDotnet
 
         class Helper
         {
-            public static async Task<List<BusStopResponse>> GetBusesForBusStop(string busStop)
+            public static List<BusStopResponse> GetBusesForBusStop(string busStop)
             {
                 var client = new RestClient("https://api.tfl.gov.uk/");
                 var request = new RestRequest($"StopPoint/{busStop}/Arrivals", DataFormat.Json);
+                var response = client.Get<List<BusStopResponse>>(request);
+                Console.WriteLine(response.Data.Count);
 
-                var response = await client.GetAsync<List<BusStopResponse>>(request);
-                ready = true;
-                Console.WriteLine(response.Count);
-
-                return response;
+                return response.Data;
             }
 
             public static void PrintNexFiveBuses(List<BusStopResponse> buses)
