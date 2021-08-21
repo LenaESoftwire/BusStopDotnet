@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusStopDotnet.Responses
 {
-    class BusStopResponse
+    class BusesForBusStop
     {
         [JsonProperty("id")]
         public int Id { get; set; }

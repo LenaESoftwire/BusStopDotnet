@@ -13,7 +13,7 @@ namespace BusStopDotnet.Responses
         public string NaptanId { get; set; }
     }
 
-    class BusStopListResponse
+    class BusStopsByCoordinates
     {
         [JsonProperty("stopPoints")]
         public List<BusStopNaptan> StopPoints { get; set; }

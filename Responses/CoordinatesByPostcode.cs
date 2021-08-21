@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusStopDotnet.Responses
 {
-    class CoordinatesResponse
+    class CoordinatesByPostcode
     {
         [JsonProperty("postcode")]
         public string Postcode { get; set; }
@@ -20,6 +20,6 @@ namespace BusStopDotnet.Responses
     class PostcodeResult
     {
         public int Status { get; set; }
-        public CoordinatesResponse Result { get; set; }
+        public CoordinatesByPostcode Result { get; set; }
     }
 }
