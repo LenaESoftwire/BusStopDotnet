@@ -13,21 +13,18 @@ namespace BusStopDotnet
 
             var stops = Helper.GetNaptanIds(coordinates.Latitude, coordinates.Longitude);
 
-            var stopNaptan = stops.StopPoints[0].NaptanId;
-            Console.WriteLine($"Stop {stopNaptan}");
+            var stopNaptan1 = stops.StopPoints[0].NaptanId;
+            Console.WriteLine($"Stop {stopNaptan1}");
+            var buses1 = Helper.GetBusesForBusStop(stopNaptan1);
+
+            var stopNaptan2 = stops.StopPoints[1].NaptanId;
+            var buses2 = Helper.GetBusesForBusStop(stopNaptan2);
 
             //var stopId = Helper.GetBusStopNaptanId();
-            var buses = Helper.GetBusesForBusStop(stopNaptan);
 
-            if (buses.Count == 1)
-            {
-                Console.WriteLine($"Couln't find any buses coming from {stopNaptan} bus stop");
-            }
+            Helper.PrintNexFiveBuses(buses1);
+            Helper.PrintNexFiveBuses(buses2);
 
-            else
-            {
-                Helper.PrintNexFiveBuses(buses);
-            }
         }
 
         class Helper
@@ -37,7 +34,6 @@ namespace BusStopDotnet
                 var client = new RestClient("https://api.tfl.gov.uk/");
                 var request = new RestRequest($"StopPoint/{busStop}/Arrivals", DataFormat.Json);
                 var response = client.Get<List<BusStopResponse>>(request);
-                Console.WriteLine($"There are {response.Data.Count} stops around");
 
                 return response.Data;
             }
@@ -62,11 +58,9 @@ namespace BusStopDotnet
                 var client = new RestClient("https://api.tfl.gov.uk/");
                 var request = new RestRequest($"StopPoint/?lat={latitude}&lon={longitude}&stopTypes=NaptanPublicBusCoachTram&radius=1000", DataFormat.Json);
                 var response = client.Get<BusStopListResponse>(request).Data;
-                Console.WriteLine(response.StopPoints.Count);
+                Console.WriteLine($"There are {response.StopPoints.Count} stops around");
 
                 return response;
-
-
             }
 
             public static void PrintNexFiveBuses(List<BusStopResponse> buses)
