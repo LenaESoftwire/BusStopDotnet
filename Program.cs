@@ -7,9 +7,10 @@ namespace BusStopDotnet
 {
     class Program
     {
-        public static bool ready = false;
         static void Main(string[] args)
         {
+            Helper.GetCoordinatesByPostcode();
+            
             var stopId = Helper.GetBusStopNaptanId();
             var buses = Helper.GetBusesForBusStop(stopId);
             //while (!ready) ;
@@ -35,6 +36,21 @@ namespace BusStopDotnet
                 Console.WriteLine(response.Data.Count);
 
                 return response.Data;
+            }
+
+            public static CoordinatesResponse GetCoordinatesByPostcode()
+            {
+                Console.Write("Please input your postcode: ");
+                var postcode = Console.ReadLine();
+                var client = new RestClient("http://api.postcodes.io/");
+                var request = new RestRequest($"Postcodes/{postcode}", DataFormat.Json);
+                var response = client.Get<PostcodeResult>(request).Data;
+                var coordinates = response.Result;
+                Console.WriteLine(coordinates.Longitude);
+                Console.WriteLine(coordinates.Latitude);
+                Console.WriteLine(coordinates.Postcode);
+
+                return response.Result;
             }
 
             public static void PrintNexFiveBuses(List<BusStopResponse> buses)
