@@ -11,6 +11,34 @@ namespace BusStopDotnet
 {
     class Services
     {
+        public static CoordinatesFromPostcode GetCoordinatesByPostcode(string postcode)
+        {
+            var client = new RestClient("http://api.postcodes.io/");
+            var request = new RestRequest($"Postcodes/{postcode}", DataFormat.Json);
+            var response = client.Get<PostcodeResult>(request).Data;
+            if (response.Status == 404)
+            {
+                Console.WriteLine(response.Error);
+            }
+            var coordinates = response.Result;
+            return coordinates;
+
+            //Console.WriteLine(coordinates.Longitude);
+            //Console.WriteLine(coordinates.Latitude);
+            //Console.WriteLine(coordinates.Postcode);
+        }
+
+        public static List<BusStop> GetBusStopsFromCoordinates(decimal latitude, decimal longitude)
+        {
+            var client = new RestClient("https://api.tfl.gov.uk/");
+            var request = new RestRequest($"StopPoint/?lat={latitude}&lon={longitude}&stopTypes=NaptanPublicBusCoachTram&radius=1000", DataFormat.Json);
+            var response = client.Get<BusStopsFromCoordinates>(request).Data;
+            var stops = response.StopPoints.Where(s => s.Modes.Contains("bus")).ToList();
+            Console.WriteLine($"There are {stops.Count} bus stops around");
+
+            return stops;
+        }
+
         public static List<BusesForBusStop> GetBusesForBusStop(string busStop)
         {
             var client = new RestClient("https://api.tfl.gov.uk/");
@@ -20,29 +48,10 @@ namespace BusStopDotnet
             return response.Data;
         }
 
-        public static CoordinatesByPostcode GetCoordinatesByPostcode()
+        public static string GetPostcodeFromUser()
         {
             Console.Write("Please input your postcode: ");
-            var postcode = Console.ReadLine();
-            var client = new RestClient("http://api.postcodes.io/");
-            var request = new RestRequest($"Postcodes/{postcode}", DataFormat.Json);
-            var response = client.Get<PostcodeResult>(request).Data;
-            var coordinates = response.Result;
-            Console.WriteLine(coordinates.Longitude);
-            Console.WriteLine(coordinates.Latitude);
-            Console.WriteLine(coordinates.Postcode);
-
-            return response.Result;
-        }
-
-        public static BusStopsByCoordinates GetNaptanIds(decimal latitude, decimal longitude)
-        {
-            var client = new RestClient("https://api.tfl.gov.uk/");
-            var request = new RestRequest($"StopPoint/?lat={latitude}&lon={longitude}&stopTypes=NaptanPublicBusCoachTram&radius=1000", DataFormat.Json);
-            var response = client.Get<BusStopsByCoordinates>(request).Data;
-            Console.WriteLine($"There are {response.StopPoints.Count} stops around");
-
-            return response;
+            return Console.ReadLine();
         }
 
         public static void PrintNexFiveBuses(List<BusesForBusStop> buses)
@@ -64,12 +73,6 @@ namespace BusStopDotnet
                     Console.WriteLine($"arrives to platform {bus.PlatformName} in {bus.TimeToStation / 60} min");
                 }
             }
-        }
-
-        public static string GetBusStopNaptanId()
-        {
-            Console.Write("Please input Bus Stop NaptanId: ");
-            return Console.ReadLine();
         }
     }
 }

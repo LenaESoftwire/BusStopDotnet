@@ -7,16 +7,19 @@ using System.Threading.Tasks;
 
 namespace BusStopDotnet.Responses
 {
-    class BusStopNaptan
+    class BusStop
     {
         [JsonProperty("stationNaptan")]
         public string NaptanId { get; set; }
+
+        [JsonProperty("modes")]
+        public List<string> Modes { get; set; }
     }
 
-    class BusStopsByCoordinates
+    class BusStopsFromCoordinates
     {
         [JsonProperty("stopPoints")]
-        public List<BusStopNaptan> StopPoints { get; set; }
+        public List<BusStop> StopPoints { get; set; }
     }
 
 }
