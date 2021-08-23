@@ -30,7 +30,7 @@ namespace BusStopDotnet
             var request = new RestRequest($"StopPoint/?lat={latitude}&lon={longitude}&stopTypes=NaptanPublicBusCoachTram&radius=1000", DataFormat.Json);
             var response = client.Get<BusStopsFromCoordinates>(request).Data;
             var stops = response.StopPoints.Where(s => s.Modes.Contains("bus")).ToList();
-            Console.WriteLine($"There are {stops.Count} bus stops around");
+            //Console.WriteLine($"There are {stops.Count} bus stops around");
 
             return stops;
         }
@@ -57,17 +57,24 @@ namespace BusStopDotnet
                 return x.TimeToStation.CompareTo(y.TimeToStation);
             });
 
-            if (buses.Count > 0)
+            if (buses.Count == 0)
             {
-                Console.WriteLine($"Busstop {buses[0].NaptanId} {buses[0].StationName}");
-                Console.WriteLine("Here are the next 5 arriving buses");
+                Console.WriteLine($"Sorry, there are no buses coming");
+            }
+
+            else
+            {
+                var count = buses.Count < 5 ? buses.Count : 5; 
+                Console.WriteLine($"Busstop {buses[0].StationName} platform {buses[0].PlatformName}\n");
+                Console.WriteLine($"Here are the next {count} arriving buses");
                 for (var i = 0; (i < buses.Count && i < 5); i++)
                 {
                     var bus = buses[i];
                     Console.Write($"Bus number {bus.LineId} ");
                     Console.Write($"going to {bus.DestinationName} ");
-                    Console.WriteLine($"arrives to platform {bus.PlatformName} in {bus.TimeToStation / 60} min");
+                    Console.WriteLine($"arrives in {bus.TimeToStation / 60} min");
                 }
+                Console.WriteLine("------------------------------------------");
             }
         }
     }

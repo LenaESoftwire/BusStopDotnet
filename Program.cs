@@ -9,8 +9,6 @@ namespace BusStopDotnet
     {
         static void Main(string[] args)
         {
-            //var postcode = Services.GetPostcodeFromUser();
-            //var postcodeResult = Services.GetCoordinatesByPostcode(postcode);
             var postcode = "";
             var postcodeResult = new PostcodeResult();
 
@@ -23,15 +21,22 @@ namespace BusStopDotnet
             var coordinates = postcodeResult.Result;
             var stops = Services.GetBusStopsFromCoordinates(coordinates.Latitude, coordinates.Longitude);
 
-            var stop1 = stops[0];
-            Console.WriteLine($"Stop {stop1}");
-            var buses1 = Services.GetBusesForBusStop(stop1.NaptanId);
+            if (stops.Count < 1)
+            {
+                Console.WriteLine($"Sorry, there are no busstops found around {postcode}");
+            }
 
-            var stop2 = stops[1];
-            var buses2 = Services.GetBusesForBusStop(stop2.NaptanId);
+            else
+            {
+                var stop1 = stops[0];
+                var buses1 = Services.GetBusesForBusStop(stop1.NaptanId);
 
-            Services.PrintNexFiveBuses(buses1);
-            Services.PrintNexFiveBuses(buses2);
+                var stop2 = stops[1];
+                var buses2 = Services.GetBusesForBusStop(stop2.NaptanId);
+
+                Services.PrintNexFiveBuses(buses1);
+                Services.PrintNexFiveBuses(buses2);
+            }
         }
     }
 }
