@@ -9,8 +9,18 @@ namespace BusStopDotnet
     {
         static void Main(string[] args)
         {
-            var postcode = Services.GetPostcodeFromUser();
-            var coordinates = Services.GetCoordinatesByPostcode(postcode);
+            //var postcode = Services.GetPostcodeFromUser();
+            //var postcodeResult = Services.GetCoordinatesByPostcode(postcode);
+            var postcode = "";
+            var postcodeResult = new PostcodeResult();
+
+            while (postcodeResult.Status != 200)
+            {
+                postcode = Services.GetPostcodeFromUser();
+                postcodeResult = Services.GetCoordinatesByPostcode(postcode);
+            }
+
+            var coordinates = postcodeResult.Result;
             var stops = Services.GetBusStopsFromCoordinates(coordinates.Latitude, coordinates.Longitude);
 
             var stop1 = stops[0];

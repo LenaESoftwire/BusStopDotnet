@@ -11,7 +11,7 @@ namespace BusStopDotnet
 {
     class Services
     {
-        public static CoordinatesFromPostcode GetCoordinatesByPostcode(string postcode)
+        public static PostcodeResult GetCoordinatesByPostcode(string postcode)
         {
             var client = new RestClient("http://api.postcodes.io/");
             var request = new RestRequest($"Postcodes/{postcode}", DataFormat.Json);
@@ -20,12 +20,8 @@ namespace BusStopDotnet
             {
                 Console.WriteLine(response.Error);
             }
-            var coordinates = response.Result;
-            return coordinates;
 
-            //Console.WriteLine(coordinates.Longitude);
-            //Console.WriteLine(coordinates.Latitude);
-            //Console.WriteLine(coordinates.Postcode);
+            return response;
         }
 
         public static List<BusStop> GetBusStopsFromCoordinates(decimal latitude, decimal longitude)
